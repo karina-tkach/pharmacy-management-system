@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Pharmacists Management</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+
+<section class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div th:if="${message != null}">
+                <div class="alert"
+                     th:class="${message == 'You have successfully updated user'} ? 'alert-success' : 'alert-danger'">
+                    <p>[[${message}]]</p>
+                </div>
+            </div>
+            <div th:if="${error != null}">
+                <div class="alert alert-danger">
+                    <p>[[${error}]]</p>
+                </div>
+            </div>
+            <div th:if="${error == null}">
+                <div class="card">
+                    <div class="card-header">
+                        Update User
+                    </div>
+                    <div class="card-body">
+                        <form action="#" th:action="@{/admin/users/updateUser}" th:object="${user}" method="POST">
+                            <input type="hidden" th:field="*{id}" />
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input th:field="*{email}" type="email" class="form-control" id="email" placeholder="Email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input th:field="*{firstName}" type="text" class="form-control" id="firstName" placeholder="First Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input th:field="*{lastName}" type="text" class="form-control" id="lastName" placeholder="Last Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="role">Role</label>
+                                <select class="form-control" id="role" th:field="*{role}" required>
+                                    <option th:value="${T(com.project.entity.user.Role).PHARMACIST}"
+                                            th:text="${T(com.project.entity.user.Role).PHARMACIST.name}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Update</button>
+                            <div class="text-center mt-3">
+                                <a href="/admin/users" class="btn btn-link">Back to Pharmacists List</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

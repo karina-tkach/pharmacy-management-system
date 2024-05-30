@@ -1,0 +1,9 @@
+
+Œ
+java:S1192&"JDefine a constant instead of duplicating this literal "suppliers" 3 times.(ÀÀã78ñœÚ‘û1J$2f047807-f1cd-48ae-b050-32c4c3c66653
+‘
+java:S1192/"IDefine a constant instead of duplicating this literal "products" 4 times.(ƒî´Åùÿÿÿÿ8òœÚ‘û1J$1f56bfd2-a758-48c4-9f05-affeaff6b6cf
+“
+java:S1192 "KDefine a constant instead of duplicating this literal "categories" 4 times.(÷ŸúÔøÿÿÿÿ8òœÚ‘û1J$49e11d90-a661-41a7-959c-19dac7fb79c3
+•
+java:S6204Y"RReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()'(ª™¨¹8šÚ‘û1J$4134e729-da0b-47ba-a847-3aefcfcb4056

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <meta charset="UTF-8">
+  <title>Main Page</title>
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+<body>
+
+<div class="home-container">
+  <div class="home-section" style="display:flex; flex-direction: row;justify-content:space-between; align-items:center;">
+    <label th:utext="${admin.getInfo()}"></label>
+    <a href="/logout" class="page-button" style="margin-bottom:0;background-color: #4949e0;">Log out</a>
+  </div>
+  <div class="home-section">
+    <h2>Info Section</h2>
+    <a href="/categories" class="page-button">Pharmacological Groups</a>
+    <a href="/suppliers" class="page-button">Suppliers</a>
+    <a href="/products" class="page-button">Medications</a>
+    <a href="/admin/users" class="page-button" sec:authorize="hasAuthority('ADMIN')">Pharmacists</a>
+  </div>
+  <div class="home-section">
+    <h2>Records Section</h2>
+    <a href="/storage/inflow" class="page-button">Inflow Medications Records</a>
+    <a href="/storage/sold" class="page-button">Sold Medications Records</a>
+    <a href="/storage/written-off" class="page-button">Written-Off Medications Records</a>
+  </div>
+  <div class="home-section">
+    <h2>Other Section</h2>
+    <a href="/storage" class="page-button">Warehouse management</a>
+    <a href="/statistics-product" class="page-button">Sold Statistics By Medicine</a>
+    <a href="/statistics-category" class="page-button">Sold Statistics By Pharmacological Group</a>
+  </div>
+</div>
+
+</body>
+</html>

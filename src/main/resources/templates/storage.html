@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Warehouse management</title>
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+<body>
+
+<h1 style="text-align: center;">Warehouse management</h1>
+
+<div class="add-form">
+  <h2>Write medicine incoming</h2>
+  <form id="add-form">
+    <label for="product-id">Medicine</label><br>
+    <select id="product-id">
+      <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}"></option>
+    </select><br><br>
+    <label for="supplier-id">Supplier</label><br>
+    <select id="supplier-id">
+      <option th:each="supplier : ${suppliers}" th:value="${supplier.id}" th:text="${supplier.name}"></option>
+    </select><br><br>
+    <label for="quantity">Quantity</label><br>
+    <input type="number" id="quantity"><br><br>
+    <label for="price-bought">Purchase price (per unit)</label><br>
+    <input type="number" id="price-bought"><br><br>
+    <label for="manufactured-on">Manufacturing date</label><br>
+    <input type="datetime-local" id="manufactured-on"><br><br><br>
+    <button type="submit">Add</button>
+  </form>
+</div>
+
+<div style="margin-top: 60px;"></div>
+
+<div class="container">
+  <div>
+    <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search by record info">
+  </div>
+  <div>
+    <label for="show-zero-quantity">Show inactive records?</label>
+    <input type="checkbox" checked id="show-zero-quantity" style="transform: scale(1.1);" onchange="toggleZeroQuantity()">
+  </div>
+</div>
+
+<div style="margin-top: 20px;"></div>
+
+<table id="records-table">
+  <thead>
+  <tr>
+    <th onclick="sortTable(0)">ID</th>
+    <th onclick="sortTable(1)">Medicine</th>
+    <th onclick="sortTable(2)">Supplier</th>
+    <th onclick="sortTable(3)">Quantity</th>
+    <th onclick="sortTable(4)">Expires on:</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="storageProduct : ${storageProducts}">
+    <td th:text="${storageProduct.id}"></td>
+    <td th:text="${storageProduct.product.name}"></td>
+    <td th:text="${storageProduct.supplier.name}"></td>
+    <td th:text="${storageProduct.quantity}"></td>
+    <td th:text="${#temporals.format(storageProduct.expiresAt, 'dd MMMM yyyy, HH:mm')}"></td>
+    <td>
+      <button class="sell-button" onclick="sellProduct(this)">Sell</button>
+      <button class="write-off-button" onclick="writeOffProduct(this)">Write off</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<div style="text-align: center;">
+  <a href="/home" class="home-button">Main Page</a>
+</div>
+
+<script src="/js/common.js"></script>
+<script>
+  document.getElementById("add-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    var storageProductId = document.getElementById("product-id").value;
+    var storageSupplierId = document.getElementById("supplier-id").value;
+    var storageQuantity = document.getElementById("quantity").value;
+    var storagePriceBought = document.getElementById("price-bought").value;
+    var storageManufacturedOn = document.getElementById("manufactured-on").value;
+
+    var requestBody = {
+      productId: storageProductId,
+      supplierId: storageSupplierId,
+      quantity: storageQuantity,
+      priceBought: storagePriceBought,
+      manufacturedOn: storageManufacturedOn
+    };
+
+    sendPostRequest(requestBody, '/storage');
+  });
+
+
+  function sendPutRequest(requestBody, storageProductId) {
+      fetch('/storage/' + storageProductId, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(errorData => {
+            var errorMessage = errorData.message;
+            throw new Error(errorMessage);
+          });
+        }
+        window.location.reload();
+      })
+      .catch(error => {
+        alert('Operation error: ' + error.message);
+      });
+  }
+
+
+  function sellProduct(button) {
+    var row = button.parentNode.parentNode;
+    var storageProductId = row.cells[0].innerText;
+    var productName = row.cells[1].innerText;
+    var productQuantity = parseInt(row.cells[3].innerText, 10);
+
+    var requestedQuantity = parseInt(prompt("How many to sell?", ""), 10);
+    if (requestedQuantity === null || requestedQuantity === "") {
+        return;
+    }
+
+    if (requestedQuantity > productQuantity) {
+        alert("Quantity exceeds available!");
+        return;
+    }
+
+
+    var pricePerUnit = parseFloat(prompt("Selling price", ""));
+    if (pricePerUnit === null || pricePerUnit === "") {
+        return;
+    }
+
+
+    var confirmSell = confirm("Are you sure to sell " + requestedQuantity + " items of '" + productName + "' with price " + pricePerUnit + " by unit?");
+    if (confirmSell) {
+        var requestBody = {
+            type: 'sold',
+            quantity: requestedQuantity,
+            priceSold: pricePerUnit
+        };
+
+        sendPutRequest(requestBody, storageProductId);
+    }
+  }
+
+
+  function writeOffProduct(button) {
+    var row = button.parentNode.parentNode;
+    var storageProductId = row.cells[0].innerText;
+    var productName = row.cells[1].innerText;
+    var productQuantity = parseInt(row.cells[3].innerText, 10);
+
+    var requestedQuantity = parseInt(prompt("How many items do you want to write off?", ""), 10);
+    if (requestedQuantity === null || requestedQuantity === "") {
+        return;
+    }
+
+    if (requestedQuantity > productQuantity) {
+        alert("Quantity exceeds available!");
+        return;
+    }
+
+
+    var confirmSell = confirm("Are you sure to write off " + requestedQuantity + " items of '" + productName + "'?");
+    if (confirmSell) {
+        var requestBody = {
+            type: 'writtenOff',
+            quantity: requestedQuantity
+        };
+
+        sendPutRequest(requestBody, storageProductId);
+    }
+  }
+
+
+  function toggleZeroQuantity() {
+    var showZeroQuantity = document.getElementById("show-zero-quantity").checked;
+    var tableRows = document.getElementById("records-table").getElementsByTagName("tr");
+
+    for (var i = 1; i < tableRows.length; i++) {
+      var quantityCell = tableRows[i].getElementsByTagName("td")[3];
+      var quantity = parseInt(quantityCell.innerText.trim(), 10);
+
+      if (quantity === 0 && !showZeroQuantity) {
+        tableRows[i].style.display = "none";
+      } else {
+        tableRows[i].style.display = "";
+      }
+    }
+  }
+</script>
+</body>
+</html>

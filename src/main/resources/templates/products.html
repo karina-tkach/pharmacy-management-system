@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Medicines</title>
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+<body>
+
+<h1 style="text-align: center;">Medicines</h1>
+
+<div class="add-form">
+  <h2>Add new medicine</h2>
+  <form id="add-form">
+    <label for="product-name">Medicine name</label><br>
+    <input type="text" id="product-name"><br>
+    <label for="category-id">Pharmacological category</label><br>
+    <select id="category-id">
+      <option th:each="category : ${categories}" th:value="${category.id}" th:utext="${category.name}"></option>
+    </select><br><br>
+    <label for="form-id">Dosage form</label><br>
+    <select id="form-id">
+      <option th:each="form : ${forms}" th:value="${form.id}" th:text="${form.name}"></option>
+    </select><br><br>
+    <label for="expiration-days">Expiration date (in days)</label><br>
+    <input type="number" id="expiration-days"><br><br>
+    <label for="is-prescriptive">Does drug need prescription?</label>
+    <input type="checkbox" id="is-prescriptive" style="transform: scale(1.1);"><br><br>
+    <label for="accounting-type-id">Has accounting type?</label><br>
+    <select id="accounting-type-id">
+      <option th:each="accountingType : ${accountingTypes}" th:value="${accountingType.id}" th:text="${accountingType.name}"></option>
+    </select><br><br><br>
+    <button type="submit">Add</button>
+  </form>
+</div>
+
+<div style="margin-top: 60px;"></div>
+
+<div>
+  <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search by medicine info">
+</div>
+
+<div style="margin-top: 20px;"></div>
+
+<table id="records-table">
+  <thead>
+  <tr>
+    <th onclick="sortTable(0)">ID</th>
+    <th onclick="sortTable(1)">Name</th>
+    <th onclick="sortTable(2)">Pharmacological group</th>
+    <th onclick="sortTable(3)">Dosage form</th>
+    <th onclick="sortTable(4)">Expiration date (in days)</th>
+    <th onclick="sortTable(6)">Prescribed?</th>
+    <th onclick="sortTable(7)">Has accounting?</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="product : ${products}">
+    <td th:text="${product.id}"></td>
+    <td th:text="${product.name}" ondblclick="enableEdit(this, '/products/', 'name')"></td>
+    <td>
+      <select onchange="updateSelected(this, '/products/', 'categoryId')">
+        <option th:each="category : ${categories}" th:value="${category.id}" th:utext="${category.name}" th:selected="${category.id eq product.category.id}"></option>
+      </select>
+    </td>
+    <td>
+      <select onchange="updateSelected(this, '/products/', 'formId')">
+        <option th:each="form : ${forms}" th:value="${form.id}" th:text="${form.name}" th:selected="${form.id eq product.form.id}"></option>
+      </select>
+    </td>
+    <td th:text="${product.expirationDays}" ondblclick="enableEdit(this, '/products/', 'expirationDays')"></td>
+    <td>
+      <select onchange="updateSelected(this, '/products/', 'isPrescriptive')">
+        <option th:value="true" th:text="Yes" th:selected="${product.isPrescriptive}"></option>
+        <option th:value="false" th:text="No" th:selected="${!product.isPrescriptive}"></option>
+      </select>
+    </td>
+    <td>
+      <select onchange="updateSelected(this, '/products/', 'accountingTypeId')">
+        <option th:each="accountingType : ${accountingTypes}" th:value="${accountingType.id}" th:text="${accountingType.name}" th:selected="${accountingType.id eq product.accountingType.id}"></option>
+      </select>
+    </td>
+    <td><button class="delete-button" onclick="deleteRecord(this, '/products/')">Delete</button></td>
+  </tr>
+  </tbody>
+</table>
+
+<div style="text-align: center;">
+  <a href="/home" class="home-button">Main Page</a>
+</div>
+
+<script src="/js/common.js"></script>
+<script>
+  document.getElementById("add-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    var productName = document.getElementById("product-name").value.trim();
+    var productCategoryId = document.getElementById("category-id").value;
+    var productFormId = document.getElementById("form-id").value;
+    var productAccountingTypeId = document.getElementById("accounting-type-id").value;
+    var productExpirationDays = document.getElementById("expiration-days").value;
+    var productIsPrescriptive = document.getElementById("is-prescriptive").checked.toString();
+
+    var requestBody = {
+      name: productName,
+      categoryId: productCategoryId,
+      formId: productFormId,
+      accountingTypeId: productAccountingTypeId,
+      expirationDays: productExpirationDays,
+      isPrescriptive: productIsPrescriptive
+    };
+
+    sendPostRequest(requestBody, '/products');
+  });
+</script>
+</body>
+</html>

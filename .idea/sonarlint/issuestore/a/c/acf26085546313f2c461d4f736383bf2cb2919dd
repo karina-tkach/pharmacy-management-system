@@ -1,0 +1,14 @@
+
+’
+java:S36559"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(Ò™à#8›’Üû1J$13a100f0-53b1-4dbe-ad7f-22c54df96c77
+˜
+java:S3655B"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(‡Ñ÷ıÿÿÿÿ8š’Üû1J$a38f15ec-5693-4f0e-8395-08c6bf3c207c
+’
+java:S3655@"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(Îáª8›’Üû1J$70fdabb1-b067-40de-8af9-ddfd0609ec36
+˜
+java:S3655>"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(–ÿÎ»úÿÿÿÿ8›’Üû1J$b641006d-353e-4340-a6ca-fe30477a13b1
+i	java:S131;""Add a default case to this switch.(¨¾ßìúÿÿÿÿ8¬’Üû1J$22447fec-d271-4315-bdf1-e6edb1431b51
+|
+java:S1128"9Remove this unused import 'com.project.entity.user.User'.(×ñ±Ø8º’Üû1J$67855fa8-be15-43e3-8f31-5d04a26f0c64
+w
+java:S1128"/Remove this unused import 'java.util.Optional'.(¨˜ëİüÿÿÿÿ8º’Üû1J$cc18d895-3b1b-4cdd-adce-0782b9bdcb6f

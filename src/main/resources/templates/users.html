@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users Management</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .error-message {
+            color: #fff;
+            padding: 10px;
+            border-radius: 3px;
+            text-align: center;
+            margin-bottom: 15px;
+            margin-top: 10px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div>
+        <div th:if="${error != null}">
+            <div class="alert alert-danger error-message">
+                <p>[[${error}]]</p>
+            </div>
+        </div>
+        <div>
+            <h1 class="mb-4">Users List</h1>
+            <div class="mb-3">
+                <a class="btn btn-primary" th:href="@{/admin/users/showNewUserForm}">Add User</a>
+            </div>
+            <div th:if="${error == null}">
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Id</th>
+                        <th>Info</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${listUsers}">
+                        <td th:text="${user.id}"></td>
+                        <td th:text="${user.getInfo()}"></td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" th:href="@{/admin/users/showFormForUpdate/{id}(id=${user.id})}">Update</a>
+                            <a class="btn btn-sm btn-danger" th:href="@{/admin/users/deleteUser/{id}(id=${user.id})}">Delete</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="mb-3">
+            <a class="btn btn-primary" th:href="@{/home}">Main Page</a>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
